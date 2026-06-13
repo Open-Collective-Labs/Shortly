@@ -1,34 +1,33 @@
 import { useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
+import { api } from '../lib/api'
+import { queryClient } from '../lib/queryClient'
 import './ShortenCard.css'
 
 function ShortenCard() {
   const [url, setUrl] = useState('')
-  const [loading, setLoading] = useState(false)
   const [shortUrl, setShortUrl] = useState('')
   const [copied, setCopied] = useState(false)
 
-  async function handleSubmit(e) {
-    e.preventDefault()
-    if (!url.trim()) return
-
-    setLoading(true)
-    setShortUrl('')
-    setCopied(false)
-
-    try {
-      const res = await fetch('/api/links', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: url.trim() }),
-      })
-      const data = await res.json()
-      setShortUrl(data.short_url || `${window.location.origin}/${data.code}`)
-    } catch {
+  const mutation = useMutation({
+    mutationFn: () => api.createLink(url.trim()),
+    onSuccess: (data) => {
+      setShortUrl(data.short_url)
+      setCopied(false)
+      queryClient.invalidateQueries({ queryKey: ['links'] })
+      queryClient.invalidateQueries({ queryKey: ['stats'] })
+    },
+    onError: (err) => {
       const fakeCode = Math.random().toString(36).substring(2, 8)
       setShortUrl(`${window.location.origin}/${fakeCode}`)
-    } finally {
-      setLoading(false)
-    }
+    },
+  })
+
+  function handleSubmit(e) {
+    e.preventDefault()
+    if (!url.trim()) return
+    setShortUrl('')
+    mutation.mutate()
   }
 
   async function handleCopy() {
@@ -51,8 +50,8 @@ function ShortenCard() {
             value={url}
             onChange={(e) => setUrl(e.target.value)}
           />
-          <button type="submit" disabled={loading || !url.trim()}>
-            {loading ? <span className="spinner" /> : 'Shorten'}
+          <button type="submit" disabled={mutation.isPending || !url.trim()}>
+            {mutation.isPending ? <span className="spinner" /> : 'Shorten'}
           </button>
         </div>
       </form>
