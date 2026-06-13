@@ -44,7 +44,7 @@ User URL → POST /api/links   Browser → GET /:code
 - **Expiration support** — Set a TTL on links so they auto-expire
 - **REST API** — All functionality exposed via a clean JSON API
 - **Vite-powered UI** — Modern React frontend with hot module reload and TanStack Query
-- **Single-command dev** — `npm run dev` starts both servers concurrently
+- **Single-command dev** — `bun run dev` starts both servers concurrently
 
 ## Tech stack
 
@@ -69,11 +69,9 @@ User URL → POST /api/links   Browser → GET /:code
 git clone https://github.com/your-org/shortly.git
 cd shortly
 
-# Install frontend dependencies
-npm install --prefix frontend
-
-# Install root dev dependencies (concurrently)
-npm install
+# Install all dependencies (root + frontend)
+bun install
+bun install --cwd frontend
 ```
 
 ### 2. Configure the database
@@ -90,7 +88,7 @@ SQLite is the default and requires zero setup.
 ### 3. Run
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 This starts:
@@ -101,8 +99,8 @@ This starts:
 ### Run separately
 
 ```bash
-npm run dev:backend   # Go server only
-npm run dev:frontend  # Vite dev server only
+bun run dev:backend   # Go server only
+bun run dev:frontend  # Vite dev server only
 ```
 
 ## API
