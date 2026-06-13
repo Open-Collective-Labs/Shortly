@@ -7,6 +7,7 @@ import (
 	"shortly/internal/config"
 	"shortly/internal/db"
 	"shortly/internal/handler"
+	"shortly/internal/middleware"
 	"shortly/internal/repository"
 	"shortly/internal/repository/postgres"
 	"shortly/internal/repository/sqlite"
@@ -32,7 +33,7 @@ func main() {
 		log.Fatalf("unsupported DB_DRIVER: %s", cfg.DBDriver)
 	}
 
-	linkService := service.NewLinkService(linkRepo)
+	linkService := service.NewLinkService(linkRepo, cfg.BaseHost)
 
 	linkHandler := handler.NewLinkHandler(linkService, cfg.BaseURL)
 	redirectHandler := handler.NewRedirectHandler(linkService)
@@ -41,6 +42,7 @@ func main() {
 	r := gin.Default()
 
 	api := r.Group("/api")
+	api.Use(middleware.RateLimit(cfg.RateLimitRPS, cfg.RateLimitBurst))
 	{
 		api.POST("/links", linkHandler.Create)
 		api.GET("/links", linkHandler.List)
@@ -49,7 +51,7 @@ func main() {
 		api.GET("/stats", statsHandler.GetStats)
 	}
 
-	r.GET("/:code", redirectHandler.Redirect)
+	r.GET("/:code", middleware.RateLimit(20, 40), redirectHandler.Redirect)
 
 	log.Printf("server running on port %s (db driver: %s)", cfg.Port, cfg.DBDriver)
 	if err := r.Run(":" + cfg.Port); err != nil {

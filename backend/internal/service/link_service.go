@@ -16,12 +16,15 @@ var (
 	ErrNotFound    = errors.New("link not found")
 )
 
+const maxURLLength = 2048
+
 type LinkService struct {
-	repo repository.LinkRepository
+	repo     repository.LinkRepository
+	baseHost string
 }
 
-func NewLinkService(repo repository.LinkRepository) *LinkService {
-	return &LinkService{repo: repo}
+func NewLinkService(repo repository.LinkRepository, baseHost string) *LinkService {
+	return &LinkService{repo: repo, baseHost: baseHost}
 }
 
 type CreateLinkInput struct {
@@ -30,8 +33,16 @@ type CreateLinkInput struct {
 }
 
 func (s *LinkService) CreateLink(ctx context.Context, input CreateLinkInput) (*model.Link, error) {
+	if len(input.OriginalURL) > maxURLLength {
+		return nil, ErrInvalidURL
+	}
+
 	parsed, err := url.ParseRequestURI(input.OriginalURL)
 	if err != nil || (parsed.Scheme != "http" && parsed.Scheme != "https") {
+		return nil, ErrInvalidURL
+	}
+
+	if s.baseHost != "" && parsed.Host == s.baseHost {
 		return nil, ErrInvalidURL
 	}
 
