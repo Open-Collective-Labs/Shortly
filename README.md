@@ -2,6 +2,8 @@
 
 A self-hosted, open-source URL shortener built with Gin (Go) + React (Vite).
 
+![Shortly screenshot](assets/backgorund.png)
+
 ## Features
 
 - **Link shortening** — Create short, memorable aliases for long URLs
