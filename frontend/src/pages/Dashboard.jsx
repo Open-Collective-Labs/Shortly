@@ -1,86 +1,105 @@
-import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { FiLink, FiMousePointer, FiActivity, FiTrendingUp } from 'react-icons/fi'
+import { api } from '../lib/api'
+import { SkeletonCard } from '../components/Skeleton'
+import '../components/Skeleton.css'
 import './Dashboard.css'
 
-const TOP_LINKS = [
-  { rank: 1, short: 'abc123', url: 'example.com/very/long/path...', clicks: 142 },
-  { rank: 2, short: 'def456', url: 'docs.example.com/getting-started...', clicks: 87 },
-  { rank: 3, short: 'ghi789', url: 'blog.example.com/posts/why-url-...', clicks: 34 },
-  { rank: 4, short: 'jkl012', url: 'shop.example.com/products/12345...', clicks: 21 },
-  { rank: 5, short: 'mno345', url: 'news.example.com/article/break...', clicks: 15 },
-]
-
-const PAGE_SIZE = 3
-
 function Dashboard() {
-  const [page, setPage] = useState(1)
+  const { data: stats, isLoading: statsLoading } = useQuery({
+    queryKey: ['stats'],
+    queryFn: () => api.getStats(),
+  })
 
-  const totalPages = Math.ceil(TOP_LINKS.length / PAGE_SIZE)
-  const paged = TOP_LINKS.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+  const { data: links, isLoading: linksLoading } = useQuery({
+    queryKey: ['links'],
+    queryFn: () => api.listLinks(100, 0),
+  })
 
-  function goTo(p) {
-    if (p >= 1 && p <= totalPages) setPage(p)
-  }
+  const topLinks = (links || [])
+    .slice()
+    .sort((a, b) => b.clicks - a.clicks)
+    .slice(0, 5)
+    .map((l, i) => ({ ...l, rank: i + 1 }))
 
   return (
     <div className="page">
       <h2 className="page-title">Dashboard</h2>
 
       <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-icon stat-icon--links"><FiLink size={22} /></div>
-          <div className="stat-body">
-            <span className="stat-value">24</span>
-            <span className="stat-label">Total Links</span>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-icon stat-icon--clicks"><FiMousePointer size={22} /></div>
-          <div className="stat-body">
-            <span className="stat-value">3,847</span>
-            <span className="stat-label">Total Clicks</span>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-icon stat-icon--active"><FiActivity size={22} /></div>
-          <div className="stat-body">
-            <span className="stat-value">22</span>
-            <span className="stat-label">Active Links</span>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-icon stat-icon--avg"><FiTrendingUp size={22} /></div>
-          <div className="stat-body">
-            <span className="stat-value">160</span>
-            <span className="stat-label">Avg. Clicks / Link</span>
-          </div>
-        </div>
+        {statsLoading ? (
+          <>
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+          </>
+        ) : (
+          <>
+            <div className="stat-card">
+              <div className="stat-icon stat-icon--links"><FiLink size={22} /></div>
+              <div className="stat-body">
+                <span className="stat-value">{stats?.total_links ?? 0}</span>
+                <span className="stat-label">Total Links</span>
+              </div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon stat-icon--clicks"><FiMousePointer size={22} /></div>
+              <div className="stat-body">
+                <span className="stat-value">{(stats?.total_clicks ?? 0).toLocaleString()}</span>
+                <span className="stat-label">Total Clicks</span>
+              </div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon stat-icon--active"><FiActivity size={22} /></div>
+              <div className="stat-body">
+                <span className="stat-value">{stats?.total_links ?? 0}</span>
+                <span className="stat-label">Active Links</span>
+              </div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon stat-icon--avg"><FiTrendingUp size={22} /></div>
+              <div className="stat-body">
+                <span className="stat-value">{Math.round(stats?.average_clicks ?? 0)}</span>
+                <span className="stat-label">Avg. Clicks / Link</span>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="dashboard-section">
         <h3 className="section-title">Top Performing Links</h3>
-        <div className="top-links">
-          {paged.map((link) => (
-            <div className="top-link-row" key={link.rank}>
-              <div className="top-link-rank">{link.rank}</div>
-              <div className="top-link-info">
-                <span className="top-link-short">/{link.short}</span>
-                <span className="top-link-url">{link.url}</span>
+        {linksLoading ? (
+          <div className="top-links">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div className="top-link-row" key={i}>
+                <div className="skeleton" style={{ width: 28, height: 28, borderRadius: '50%' }} />
+                <div className="top-link-info">
+                  <div className="skeleton" style={{ width: 120, height: 16, borderRadius: 4 }} />
+                  <div className="skeleton" style={{ width: 200, height: 14, borderRadius: 4, marginTop: 4 }} />
+                </div>
+                <div className="skeleton" style={{ width: 60, height: 16, borderRadius: 4 }} />
               </div>
-              <div className="top-link-clicks">
-                <span className="top-link-num">{link.clicks}</span>
-                <span className="top-link-label">clicks</span>
-              </div>
-            </div>
-          ))}
-        </div>
-        {totalPages > 1 && (
-          <div className="pagination">
-            <button className="page-btn" disabled={page === 1} onClick={() => goTo(page - 1)}>Prev</button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-              <button key={p} className={`page-btn ${p === page ? 'page-btn--active' : ''}`} onClick={() => goTo(p)}>{p}</button>
             ))}
-            <button className="page-btn" disabled={page === totalPages} onClick={() => goTo(page + 1)}>Next</button>
+          </div>
+        ) : topLinks.length === 0 ? (
+          <p className="page-empty" style={{ marginTop: 0 }}>No links yet.</p>
+        ) : (
+          <div className="top-links">
+            {topLinks.map((link) => (
+              <div className="top-link-row" key={link.id}>
+                <div className="top-link-rank">{link.rank}</div>
+                <div className="top-link-info">
+                  <span className="top-link-short">/{link.code}</span>
+                  <span className="top-link-url">{link.original_url}</span>
+                </div>
+                <div className="top-link-clicks">
+                  <span className="top-link-num">{link.clicks}</span>
+                  <span className="top-link-label">clicks</span>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>

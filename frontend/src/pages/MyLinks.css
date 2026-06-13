@@ -175,6 +175,17 @@
   color: #dc2626;
 }
 
+.icon-btn--copied {
+  background: #f0fdf4;
+  color: #16a34a;
+  width: auto;
+  padding: 0 10px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: default;
+  pointer-events: none;
+}
+
 .pagination {
   display: flex;
   align-items: center;
