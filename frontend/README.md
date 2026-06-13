@@ -1,16 +1,46 @@
-# React + Vite
+# Shortly — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite frontend for the Shortly URL shortener.
 
-Currently, two official plugins are available:
+## Tech stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+| Tool | Purpose |
+|------|---------|
+| React 19 | UI framework |
+| Vite 8 | Dev server and build tool |
+| React Router 7 | Client-side routing |
+| TanStack React Query 5 | Data fetching, caching, loading states |
+| react-icons | Icons (Feather) |
+| Bun | Package manager and dev runner |
 
-## React Compiler
+## Dev
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+From the project root:
 
-## Expanding the ESLint configuration
+```bash
+bun run dev
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+This starts both the frontend (port 5173) and backend (port 8080). API calls to `/api/*` are proxied to the backend via Vite's dev proxy.
+
+## Env vars
+
+See `.env.example`. All frontend env vars use the `VITE_` prefix.
+
+| Var | Default | Description |
+|-----|---------|-------------|
+| `VITE_PORT` | `5173` | Dev server port |
+| `VITE_API_TARGET` | `http://localhost:8080` | Backend proxy target |
+| `VITE_API_URL` | `(empty)` | API base URL — empty uses the Vite proxy; set to a full URL for direct backend access |
+
+## Project structure
+
+```
+src/
+├── components/     # Reusable UI (Header, Hero, ShortenCard, ConfirmModal, Skeleton, DotsBackground)
+├── pages/          # Route-level pages (Home, MyLinks, Dashboard)
+├── lib/            # API client, TanStack Query client
+├── App.jsx         # Route definitions
+├── main.jsx        # Entry point with providers
+└── index.css       # Global styles
+```
