@@ -93,6 +93,12 @@ npm run dev:frontend  # Vite dev server only
 
 Issues and pull requests are welcome. Please open an issue to discuss any significant changes before submitting a PR.
 
+## Documentation
+
+- [Architecture overview](docs/architecture.md)
+- [Backend architecture](docs/backend.md)
+- [Frontend architecture](docs/frontend.md)
+
 ## License
 
 MIT
