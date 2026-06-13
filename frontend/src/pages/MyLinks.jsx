@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { FiSearch, FiCopy, FiTrash2, FiExternalLink } from 'react-icons/fi'
 import { api } from '../lib/api'
@@ -13,6 +13,19 @@ function MyLinks() {
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
   const [deleteTarget, setDeleteTarget] = useState(null)
+  const [copiedId, setCopiedId] = useState(null)
+  const copyTimer = useRef(null)
+
+  const handleCopy = useCallback(async (id, shortUrl) => {
+    try {
+      await navigator.clipboard.writeText(shortUrl)
+      setCopiedId(id)
+      if (copyTimer.current) clearTimeout(copyTimer.current)
+      copyTimer.current = setTimeout(() => setCopiedId(null), 1500)
+    } catch {
+      // fallback
+    }
+  }, [])
 
   const { data: links, isLoading } = useQuery({
     queryKey: ['links'],
@@ -38,14 +51,6 @@ function MyLinks() {
 
   function goTo(p) {
     if (p >= 1 && p <= totalPages) setPage(p)
-  }
-
-  async function handleCopy(shortUrl) {
-    try {
-      await navigator.clipboard.writeText(shortUrl)
-    } catch {
-      // fallback
-    }
   }
 
   function handleDeleteConfirm() {
@@ -96,8 +101,8 @@ function MyLinks() {
                 <span className="col-clicks">{link.clicks.toLocaleString()}</span>
                 <span className="col-created">{new Date(link.created_at).toLocaleDateString()}</span>
                 <span className="col-actions">
-                  <button className="icon-btn" title="Copy" onClick={() => handleCopy(link.short_url)}>
-                    <FiCopy size={16} />
+                  <button className={`icon-btn ${copiedId === link.id ? 'icon-btn--copied' : ''}`} title="Copy" onClick={() => handleCopy(link.id, link.short_url)}>
+                    {copiedId === link.id ? <span>Copied!</span> : <FiCopy size={16} />}
                   </button>
                   <a href={link.short_url} target="_blank" className="icon-btn" title="Open">
                     <FiExternalLink size={16} />
