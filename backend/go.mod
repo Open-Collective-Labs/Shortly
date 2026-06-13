@@ -5,6 +5,7 @@ go 1.26.3
 require (
 	github.com/gin-gonic/gin v1.12.0
 	github.com/jackc/pgx/v5 v5.6.0
+	github.com/joho/godotenv v1.5.1
 	golang.org/x/time v0.15.0
 	modernc.org/sqlite v1.52.0
 )

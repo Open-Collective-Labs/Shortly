@@ -3,7 +3,15 @@ package config
 import (
 	"net/url"
 	"os"
+
+	"github.com/joho/godotenv"
 )
+
+func init() {
+	// Load .env from current directory (backend/) or parent (root)
+	godotenv.Load()
+	godotenv.Load("../.env")
+}
 
 type Config struct {
 	Port           string
