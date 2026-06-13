@@ -1,0 +1,66 @@
+header {
+  height: 60px;
+  border-bottom: 1px solid #e5e4e7;
+}
+
+header nav {
+  max-width: 1126px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 28px;
+  font-weight: 500;
+  color: #08060d;
+  margin-right: 40px;
+  text-decoration: none;
+}
+
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 500;
+  color: #000;
+  text-decoration: none;
+  border-radius: 9999px;
+  transition: background 0.2s;
+}
+
+.tab svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.tab:hover {
+  background: #f4f3ec;
+}
+
+.tab.active {
+  background: #f4f3ec;
+}
+
+.tab-github {
+  border: 1.5px solid #d0d0d0;
+}

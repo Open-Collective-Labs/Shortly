@@ -1,0 +1,130 @@
+.shorten-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 560px;
+}
+
+.shorten-card {
+  background: #fff;
+  border: 1px solid #e5e4e7;
+  border-radius: 9999px;
+  padding: 6px;
+  width: 100%;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+.shorten-input-row {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+}
+
+.shorten-input-row input {
+  flex: 1;
+  padding: 12px 16px;
+  font-size: 1rem;
+  font-family: 'Google Sans Flex', sans-serif;
+  border: none;
+  border-radius: 9999px;
+  outline: none;
+  color: #000;
+  background: transparent;
+}
+
+.shorten-input-row input::placeholder {
+  color: #aaa;
+}
+
+.shorten-input-row button {
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Google Sans Flex', sans-serif;
+  color: #fff;
+  background: #000;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+  min-width: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shorten-input-row button:hover:not(:disabled) {
+  background: #333;
+}
+
+.shorten-input-row button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.shorten-result {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid #e5e4e7;
+  border-radius: 9999px;
+  padding: 6px 6px 6px 16px;
+  width: 100%;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  animation: fadeUp 0.3s ease;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.result-url {
+  flex: 1;
+  font-size: 0.95rem;
+  color: #000;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.copy-btn {
+  padding: 8px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: 'Google Sans Flex', sans-serif;
+  color: #000;
+  background: #f4f3ec;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.copy-btn:hover {
+  background: #e5e4e7;
+}
