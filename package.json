@@ -1,0 +1,12 @@
+{
+  "name": "shortly",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c blue,green \"go run ./backend\" \"npm run dev --prefix frontend\"",
+    "dev:backend": "go run ./backend",
+    "dev:frontend": "npm run dev --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
