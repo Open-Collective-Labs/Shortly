@@ -1,19 +1,22 @@
 package main
 
 import (
-	"net/http"
+	"log"
+
+	"shortly/backend/config"
+	"shortly/backend/database"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	cfg := config.Load()
+
+	db := database.Connect(cfg.DBDriver, cfg.DBDSN)
+	_ = db
+
 	r := gin.Default()
 
-	r.GET("/api/hello", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "Hello from Go!",
-		})
-	})
-
-	r.Run(":8080")
+	log.Printf("Server starting on :%s", cfg.Port)
+	r.Run(":" + cfg.Port)
 }
