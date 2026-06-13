@@ -40,9 +40,9 @@ function MyLinks() {
     if (p >= 1 && p <= totalPages) setPage(p)
   }
 
-  async function handleCopy(code) {
+  async function handleCopy(shortUrl) {
     try {
-      await navigator.clipboard.writeText(`${window.location.origin}/${code}`)
+      await navigator.clipboard.writeText(shortUrl)
     } catch {
       // fallback
     }
@@ -96,10 +96,10 @@ function MyLinks() {
                 <span className="col-clicks">{link.clicks.toLocaleString()}</span>
                 <span className="col-created">{new Date(link.created_at).toLocaleDateString()}</span>
                 <span className="col-actions">
-                  <button className="icon-btn" title="Copy" onClick={() => handleCopy(link.code)}>
+                  <button className="icon-btn" title="Copy" onClick={() => handleCopy(link.short_url)}>
                     <FiCopy size={16} />
                   </button>
-                  <a href={`/${link.code}`} target="_blank" className="icon-btn" title="Open">
+                  <a href={link.short_url} target="_blank" className="icon-btn" title="Open">
                     <FiExternalLink size={16} />
                   </a>
                   <button className="icon-btn icon-btn--danger" title="Delete" onClick={() => setDeleteTarget(link)}>
