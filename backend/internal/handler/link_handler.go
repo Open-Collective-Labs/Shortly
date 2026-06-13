@@ -37,13 +37,8 @@ func (h *LinkHandler) Create(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{
-		"id":           link.ID,
-		"code":         link.Code,
-		"short_url":    h.baseURL + "/" + link.Code,
-		"original_url": link.OriginalURL,
-		"created_at":   link.CreatedAt,
-	})
+	link.ShortURL = h.baseURL + "/" + link.Code
+	c.JSON(http.StatusCreated, link)
 }
 
 func (h *LinkHandler) List(c *gin.Context) {
@@ -54,6 +49,9 @@ func (h *LinkHandler) List(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to list links"})
 		return
+	}
+	for i := range links {
+		links[i].ShortURL = h.baseURL + "/" + links[i].Code
 	}
 	c.JSON(http.StatusOK, links)
 }
@@ -70,6 +68,7 @@ func (h *LinkHandler) Get(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "link not found"})
 		return
 	}
+	link.ShortURL = h.baseURL + "/" + link.Code
 	c.JSON(http.StatusOK, link)
 }
 

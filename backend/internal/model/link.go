@@ -6,6 +6,7 @@ type Link struct {
 	ID            int64      `json:"id"`
 	Code          string     `json:"code"`
 	OriginalURL   string     `json:"original_url"`
+	ShortURL      string     `json:"short_url,omitempty"`
 	Clicks        int64      `json:"clicks"`
 	CreatedAt     time.Time  `json:"created_at"`
 	LastClickedAt *time.Time `json:"last_clicked_at,omitempty"`
