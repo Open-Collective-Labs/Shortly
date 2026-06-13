@@ -1,20 +1,20 @@
 package config
 
-import (
-	"os"
-)
+import "os"
 
 type Config struct {
 	Port     string
 	DBDriver string
 	DBDSN    string
+	BaseURL  string
 }
 
-func Load() *Config {
-	return &Config{
+func Load() Config {
+	return Config{
 		Port:     getEnv("PORT", "8080"),
 		DBDriver: getEnv("DB_DRIVER", "sqlite"),
 		DBDSN:    getEnv("DB_DSN", "shortly.db"),
+		BaseURL:  getEnv("BASE_URL", "http://localhost:8080"),
 	}
 }
 

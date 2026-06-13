@@ -2,8 +2,8 @@
   "name": "shortly",
   "private": true,
   "scripts": {
-"dev": "concurrently -n backend,frontend -c blue,green \"go run ./backend\" \"bun run --cwd frontend dev\"",
-"dev:backend": "go run ./backend",
+"dev": "concurrently -n backend,frontend -c blue,green \"go run ./backend/cmd/server\" \"bun run --cwd frontend dev\"",
+"dev:backend": "go run ./backend/cmd/server",
 "dev:frontend": "bun run --cwd frontend dev"
   },
   "devDependencies": {
